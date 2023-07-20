@@ -9,14 +9,21 @@ b2_max = 207
 curr_b1 = 0
 curr_b2 = 0
 
+curr_w1 = 200
+curr_w2 = 200
+
+curr_e1 = 200000
+curr_e2 = 200000
+
+curr_g1 = 4000
+curr_g2 = 4000
+
 def on_connect(client, userdata, flags, rc):
     print("Connection returned result: " + str(rc))
 
 client = mqtt.Client(client_id= "IoTr") 
 client.on_connect = on_connect
 client.connect("test.mosquitto.org", port = 1883)
-
-
 
 def incr1():
     global curr_b1
@@ -49,8 +56,8 @@ def pub_temp():
     client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_TEMP/Temperature", round(t6, 2))
 
 def pub_bld_oc():
-    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_NOP/Number_of_people", curr_b1)
-    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_NOP/Number_of_people", curr_b2)
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_NOP/Number of people", curr_b1)
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_NOP/Number of people", curr_b2)
 
 def pub_room_oc():
     client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_PRS/Presence", randrange(2))
@@ -96,7 +103,49 @@ def pub_lum():
     client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_ILUM/Illuminance", round(l5, 2))
     client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_ILUM/Illuminance", round(l6, 2))
 
-schedule.every(10).seconds.do(pub_temp)
+def pub_co2():
+    c1 = uniform(350.0, 1000.0)
+    c2 = uniform(300.0, 1000.0)
+    c3 = uniform(300.0, 1000.0)
+    c4 = uniform(300.0, 1000.0)
+    c5 = uniform(300.0, 1000.0)
+    c6 = uniform(300.0, 1000.0)
+
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_CO2/CO2 level", round(c1, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_CO2/CO2 level", round(c2, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_CO2/CO2 level", round(c3, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_CO2/CO2 level", round(c4, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_CO2/CO2 level", round(c5, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_CO2/CO2 level", round(c6, 2))
+
+def pub_water():
+    global curr_w1
+    global curr_w2
+    curr_w1 += 2
+    curr_w2 += 1
+    
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_WTR/Water meter", round(curr_w1, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_WTR/Water meter", round(curr_w2, 2))
+
+def pub_electricity():
+    global curr_e1
+    global curr_e2
+    curr_e1 += 2
+    curr_e2 += 1
+    
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_ELC/Electricity meter", round(curr_e1, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_ELC/Electricity meter", round(curr_e2, 2))
+
+def pub_gas():
+    global curr_g1
+    global curr_g2
+    curr_g1 += 2
+    curr_g2 += 1
+    
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_GAS/Gas meter", round(curr_g1, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_GAS/Gas meter", round(curr_g2, 2))
+
+schedule.every(40).seconds.do(pub_temp)
 schedule.every(5).seconds.do(pub_bld_oc)
 schedule.every(8).seconds.do(incr1)
 schedule.every(10).seconds.do(incr2)
@@ -104,6 +153,10 @@ schedule.every(18).seconds.do(decr)
 schedule.every(15).seconds.do(pub_room_oc)
 schedule.every(20).seconds.do(pub_room_nse)
 schedule.every(30).seconds.do(pub_lum)
+schedule.every(25).seconds.do(pub_co2)
+schedule.every(2).minutes.do(pub_water)
+schedule.every(4).minutes.do(pub_electricity)
+schedule.every(6).minutes.do(pub_gas)
 
 while True:
     schedule.run_pending()
