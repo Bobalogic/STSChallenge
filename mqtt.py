@@ -9,9 +9,16 @@ SensorUnits = {
     'CO2 level': 'ppm',
     'Presence': 'Presence',
     'Water meter': 'Liters',
-    'Gas meter': 'Cubic meters'
+    'Gas meter': 'Cubic meters',
+    'Noise': 'Decibels',
+    'Illuminance': 'Lux',
+    'Electricity meter': 'Watts',
+    'Number_of_people': 'Integer'
+    
 }
+
 dbhub_io_url = 'https://dbhub.io/Bobalogic/IoTroopers.db'
+existingSensors = {}
 
 def initialize_db():
     try:
@@ -93,8 +100,8 @@ def get_sensor_id_from_db():
         return None
 
 def add_sensor_to_db(topics):
+    new_sensor_id = get_sensor_id_from_db() + 1
     try:
-        new_sensor_id = get_sensor_id_from_db() + 1
         conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
         # topics: Office, Building, Room, Name, Type, Units
@@ -111,15 +118,16 @@ def add_sensor_to_db(topics):
     finally:
         cursor.close()
         conn.close()
+    return new_sensor_id
 
-def add_sensor_value_to_db(topics, value):
+def add_sensor_value_to_db(id, value):
     try:
         conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO sensor_values (sensor, timestamp, value) VALUES (?, ?, ?)
-        """, (get_sensor_id_from_db(), get_current_timestamp(), value))
+        """, (id, get_current_timestamp(), value))
 
         conn.commit()
     
@@ -143,21 +151,43 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    #print(msg.topic+" --- "+str(msg.payload))
+    # topics: Office, Building, Room, Name, Type, Units
     topics = msg.topic.split('/')[1:]
     topics.append(SensorUnits.get(topics[-1]))
     value = msg.payload.decode()
+    name = topics[3]
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
-        # topics: Office, Building, Room, Name, Type, Units
-        print(topics)
-        print(value)
-        # TODO: Ready to be stored in db
-        add_sensor_to_db(topics)
-        add_sensor_value_to_db(topics, value)
+        global existingSensors
+        id = -1
+        result = existingSensors.get(name)
+        if result:
+            id = result
+        else:
+            # Verify if the sensor already exists
+            conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+            cursor = conn.cursor()
 
+            cursor.execute("""SELECT id, name FROM sensors WHERE name = ?;""", (name,))
+            queryResult = cursor.fetchone()
+            # If it does get it's id
+            if queryResult:
+                id = queryResult[0]
+                existingSensors.update({name: id})
+                
+            cursor.close()
+            conn.close()
         
-
+        # If it does get it's id
+        if id != -1:
+            print("The sensor", name, "already exists with id:", id)
+        # If not, add it
+        else:
+            id = add_sensor_to_db(topics)
+            print("The sensor", name, "is new and it has an id:", id)
+        # Add the value with the associated sensor id
+        add_sensor_value_to_db(id, value)
+        print("Added the value:", value, "to sensor", name, "with id:", id)
 
 client = mqtt.Client()
 client.on_connect = on_connect
