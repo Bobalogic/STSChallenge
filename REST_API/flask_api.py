@@ -12,7 +12,10 @@ app = Flask(__name__)
 def getSensor(sensorId):
     db = sqlite3.connect("sensors.db")
     cur = db.cursor()
-    res = cur.execute("SELECT * FROM sensors WHERE id=" + str(sensorId))
+    res = cur.execute(
+        "SELECT value, timestamp FROM sensor_values "
+        "WHERE sensor= " + str(sensorId) + " ORDER BY timestamp DESC LIMIT 10"
+    )
     result = jsonify(res.fetchone())
     cur.close()
     db.close()
