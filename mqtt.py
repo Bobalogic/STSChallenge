@@ -1,30 +1,16 @@
 import paho.mqtt.client as mqtt
 import sqlite3
 from enum import Enum
-from datetime import datetime
+ 
 
-# Tipos de Sensores:
-#   - Temperatura = Temperature -> Celsius
-#   - CO2 = Gas Meter -> ppm
-#   - Presença = Presence -> 0 ou 1
-#   - Humidade = Water Meter -> L
-
-#TO DO:
-#   - Adicionar os sensores à base de dados
-#   - Adicionar os valores dos sensores à base de dados
-#   - Dizer à lia para mudar os nomes que usa no MQTT
-#   - Fazer a ligação à REST API usando o Flask
-
-#   -Usar a função get_current_timestamp() para obter o timestamp atual
-
-dbhub_io_url = "https://dbhub.io/Bobalogic/IoTroopers.db"
-
-class SensorUnits(Enum):
-    Temperature = 'Celsius'
-    Gas = 'ppm'
-    Presence = 'Presence'
-    Water_Meter = 'L'
-
+# TODO: Add what's left
+sensorUnits = {
+    'Temperature': 'Celsius',
+    'CO2 level': 'ppm',
+    'Presence': 'Presence',
+    'Water meter': 'Liters',
+    'Gas meter': 'Cubic meters'
+}
 
 def initialize_db():
     try:
@@ -149,7 +135,7 @@ def add_sensor_value_to_db(topics, value):
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    print("Connected with result code " + str(rc))
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -159,14 +145,18 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     #print(msg.topic+" --- "+str(msg.payload))
-
     topics = msg.topic.split('/')[1:]
-    #print(topics) #representa os parametros do sensor
-    #print(msg.payload.decode('utf-8')) #isto é o valor do sensor
-    add_sensor_to_db(topics)
-    #add_sensor_value_to_db(topics, msg.payload)
-    # Office, Building, Room, Sensor Name, Sensor
+    topics.append(sensorUnits.get(topics[-1]))
+    value = msg.payload.decode()
+    # Ignore keepalive messages
+    if topics[2] != 'keepalive':
+        # topics: Office, Building, Room, Name, Type, Units
+        print(topics)
+        print(value)
+        # TODO: Ready to be stored in db
+        #sendToBd(topics, value)
 
+        
 
 
 client = mqtt.Client()
@@ -174,12 +164,7 @@ client.on_connect = on_connect
 client.on_message = on_message
 
 client.connect('test.mosquitto.org', port=1883)
-
 initialize_db()
 
 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
 client.loop_forever()
