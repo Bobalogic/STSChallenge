@@ -4,29 +4,33 @@
 from flask import Flask, request, jsonify
 import sqlite3
 
-# Initialize database connection
-# conn = sqlite3.connect("sensors.db")
-# cur = conn.cursor()
-
-# res = cur.execute("SELECT * FROM sensors")
-# print(res.fetchone())
-
 app = Flask(__name__)
 
 
 @app.route("/sensors/<sensorId>", methods=["GET"])
 def getSensor(sensorId):
-    conn = sqlite3.connect("sensors.db")
-    cur = conn.cursor()
+    db = sqlite3.connect("sensors.db")
+    cur = db.cursor()
     res = cur.execute("SELECT * FROM sensors WHERE id=" + str(sensorId))
     result = jsonify(res.fetchone())
     cur.close()
-    conn.close()
+    db.close()
     return result
 
 
 @app.route("/sensors", methods=["POST"])
 def addSensor():
+    data = request.get_json()
+    db = sqlite3.connect("sensors.db")
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO sensors (id, name, type, office, building, room, units)"
+        "VALUES (:id, :name, :type, :office, :building, :room, :units)",
+        data,
+    )
+    db.commit()
+    cur.close()
+    db.close()
     return "Adding sensor"
 
 
