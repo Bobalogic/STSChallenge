@@ -19,14 +19,44 @@ selected = option_menu(menu_title=None,
 
 if selected == 'Add Sensor':
 	if st.button("ADD"):
-		response = requests.post("http://localhost:5000/sensors")
+		headers={
+    		'Content-type':'application/json', 
+    		'Accept':'application/json'
+		}
+		json_data = {
+		    "id": 1000000,
+		    "name": "sensor_name_value",
+		    "type": "sensor_type_value",
+		    "office": "office_value",
+		    "building": "building_value",
+		    "room": "room_value",
+		    "units": "units_value"
+		}
+
+		response = requests.post(
+			url="http://localhost:5000/sensors",
+			headers = headers,
+			json=json_data
+		)
+		
+
+		print(response)
 		st.warning(response.text)
+
+
+
 
 if selected == 'Sensor Data':
 	sensor_id = st.text_input("ID:")
 	if st.button("Send"):
 		response = requests.get("http://localhost:5000/sensors/{}".format(sensor_id))
-		st.warning(response.text)
+
+		json_data = json.loads(response.text)
+		#st.markdown("Input: output")
+		#print(json_data)
+
+
+		st.warning(json_data)
 
 if selected == 'GPT':
 	prompt = st.text_input("enter your question")
