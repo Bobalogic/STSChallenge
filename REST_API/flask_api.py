@@ -21,14 +21,14 @@ def getSensor(sensorId):
     cur.close()
     db.close()
 
-    entry = "{"
+    entry = "["
     for read in result:
         subentry = {}
         subentry["value"] = read[0]
         subentry["timestamp"] = read[1]
         entry = entry + json.dumps(subentry) + ","
 
-    entry = entry[:-1] + "}"
+    entry = entry[:-1] + "]"
 
     return entry
 

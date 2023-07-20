@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 from PIL import Image
 import requests
 import json
+from datetime import datetime
 
 st.set_page_config(page_title="STS APP ")
 col1, col2 = st.columns([1,2])
@@ -52,11 +53,11 @@ if selected == 'Sensor Data':
 		response = requests.get("http://localhost:5000/sensors/{}".format(sensor_id))
 
 		json_data = json.loads(response.text)
-		#st.markdown("Input: output")
-		#print(json_data)
+		#datetime_object = datetime.strptime(json_data[0]['timestamp'][:-7], '%y-%m-%d %H:%M:%S')
 
 
-		st.warning(json_data)
+		for i in range(10):
+			st.write("Value {} Timestamp: {}".format(json_data[i]['value'], json_data[i]['timestamp'][:-7]))
 
 if selected == 'GPT':
 	prompt = st.text_input("enter your question")
