@@ -31,9 +31,7 @@ def getQuery(text):
         print(sql_query)
         cursor.execute(sql_query)
         result = cursor.fetchall()
-            
-        cursor.close()
-        conn.close()
+
     except sqlite3.Error as e:
         # Handle any potential errors that might occur during the database operation
         print("Error: ", e)
@@ -44,4 +42,7 @@ def getQuery(text):
 
     return result
 
-print(getQuery("What is the highest temperature in all offices in the last 20 minutes and what is the office?"))
+results = getQuery("What is the highest temperature in all offices in the last 20 minutes and what is the office?")
+
+for i in results:
+    print(i)
