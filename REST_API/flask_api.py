@@ -1,10 +1,11 @@
 # By: Manuel Santos
 # Run: python .\flask_api.py
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
+import sqlite3
 
-# import sqlite3
-# conn = sqlite3.connect('sensors.db')
+# Initialize database connection
+# conn = sqlite3.connect("sensors.db")
 # cur = conn.cursor()
 
 # res = cur.execute("SELECT * FROM sensors")
@@ -15,7 +16,13 @@ app = Flask(__name__)
 
 @app.route("/sensors/<sensorId>", methods=["GET"])
 def getSensor(sensorId):
-    return "Getting sensor " + sensorId + " data"
+    conn = sqlite3.connect("sensors.db")
+    cur = conn.cursor()
+    res = cur.execute("SELECT * FROM sensors WHERE id=" + str(sensorId))
+    result = jsonify(res.fetchone())
+    cur.close()
+    conn.close()
+    return result
 
 
 @app.route("/sensors", methods=["POST"])

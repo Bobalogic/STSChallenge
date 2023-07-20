@@ -11,6 +11,10 @@ MAX_CAPACITY["Porto"] = 132
 MAX_CAPACITY["Lisboa"] = 50
 
 
+
+
+
+
 # init
 time_stamp = datetime.datetime.now()
 # for time measures
