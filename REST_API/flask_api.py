@@ -3,6 +3,7 @@
 
 from flask import Flask, request, jsonify
 import sqlite3
+import json
 
 app = Flask(__name__)
 
@@ -16,10 +17,20 @@ def getSensor(sensorId):
         "SELECT value, timestamp FROM sensor_values "
         "WHERE sensor= " + str(sensorId) + " ORDER BY timestamp DESC LIMIT 10"
     )
-    result = jsonify(res.fetchone())
+    result = res.fetchall()
     cur.close()
     db.close()
-    return result
+
+    entry = "{"
+    for read in result:
+        subentry = {}
+        subentry["value"] = read[0]
+        subentry["timestamp"] = read[1]
+        entry = entry + json.dumps(subentry) + ","
+
+    entry = entry[:-1] + "}"
+
+    return entry
 
 
 # Request to insert new sensor data
