@@ -12,4 +12,5 @@ CREATE TABLE IF NOT EXISTS "sensor_values" (
 	"sensor" INTEGER,
 	"timestamp" TEXT,
 	"value" REAL
+	
 )
