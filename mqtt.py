@@ -13,7 +13,7 @@ SensorUnits = {
     'Noise': 'Decibels',
     'Illuminance': 'Lux',
     'Electricity meter': 'Watts',
-    'Number_of_people': 'Integer'
+    'Number of people': 'Integer'
     
 }
 
@@ -156,14 +156,12 @@ def on_message(client, userdata, msg):
     topics.append(SensorUnits.get(topics[-1]))
     value = msg.payload.decode()
     name = topics[3]
+
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
         global existingSensors
-        id = -1
-        result = existingSensors.get(name)
-        if result:
-            id = result
-        else:
+        id = existingSensors.get(name, -1)
+        if id == -1:
             # Verify if the sensor already exists
             conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
             cursor = conn.cursor()
@@ -184,7 +182,9 @@ def on_message(client, userdata, msg):
         # If not, add it
         else:
             id = add_sensor_to_db(topics)
+            existingSensors.update({name: id})
             print("The sensor", name, "is new and it has an id:", id)
+
         # Add the value with the associated sensor id
         add_sensor_value_to_db(id, value)
         print("Added the value:", value, "to sensor", name, "with id:", id)
