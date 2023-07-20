@@ -1,21 +1,22 @@
 import paho.mqtt.client as mqtt
 import sqlite3
 from enum import Enum
- 
+from datetime import datetime
 
 # TODO: Add what's left
-sensorUnits = {
+SensorUnits = {
     'Temperature': 'Celsius',
     'CO2 level': 'ppm',
     'Presence': 'Presence',
     'Water meter': 'Liters',
     'Gas meter': 'Cubic meters'
 }
+dbhub_io_url = 'https://dbhub.io/Bobalogic/IoTroopers.db'
 
 def initialize_db():
     try:
         # Connect to SQLite database - this will create a new database file if it doesn't exist
-        conn = sqlite3.connect("dbhub_io_url", check_same_thread=False)
+        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
         cursor.execute(""" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='sensors' """)
@@ -69,7 +70,7 @@ def get_current_timestamp():
 def get_sensor_id_from_db():
     try:
         # Connect to the SQLite database
-        conn = sqlite3.connect("dbhub_io_url", check_same_thread=False)
+        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
         # Execute a query to get the highest sensor ID from the "sensors" table
@@ -94,14 +95,12 @@ def get_sensor_id_from_db():
 def add_sensor_to_db(topics):
     try:
         new_sensor_id = get_sensor_id_from_db() + 1
-        conn = sqlite3.connect("dbhub_io_url", check_same_thread=False)
+        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
-
-        sensor_type = topics[4].replace(' ', '_')
-
+        # topics: Office, Building, Room, Name, Type, Units
         cursor.execute("""
             INSERT INTO sensors (id, name, type, office, building, room, units) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (new_sensor_id, topics[3], topics[2], topics[0], topics[1], topics[4], SensorUnits[sensor_type].value))
+        """, (new_sensor_id, topics[3], topics[4], topics[0], topics[1], topics[2], topics[5]))
 
         conn.commit()
 
@@ -115,7 +114,7 @@ def add_sensor_to_db(topics):
 
 def add_sensor_value_to_db(topics, value):
     try:
-        conn = sqlite3.connect("dbhub_io_url", check_same_thread=False)
+        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -146,7 +145,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     #print(msg.topic+" --- "+str(msg.payload))
     topics = msg.topic.split('/')[1:]
-    topics.append(sensorUnits.get(topics[-1]))
+    topics.append(SensorUnits.get(topics[-1]))
     value = msg.payload.decode()
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
@@ -154,7 +153,8 @@ def on_message(client, userdata, msg):
         print(topics)
         print(value)
         # TODO: Ready to be stored in db
-        #sendToBd(topics, value)
+        add_sensor_to_db(topics)
+        add_sensor_value_to_db(topics, value)
 
         
 
