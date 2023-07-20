@@ -33,6 +33,17 @@ def initialize_db():
               )
             """)
 
+            cursor.execute("""
+                CREATE TRIGGER check_same_sensor
+                BEFORE UPDATE ON sensor_values
+                FOR EACH ROW
+                WHEN NEW.sensor != OLD.sensor
+                BEGIN
+                    SELECT RAISE(ABORT, 'Sensor ID cannot be changed');
+                END;
+            """)
+
+
             # Commit the transaction and close the connection
             conn.commit()
 
