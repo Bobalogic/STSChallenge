@@ -25,10 +25,10 @@ python RunMe.py
 ## Usage
 Once the setup is complete, the IoT sensor data generator will start publishing simulated sensor data to the MQTT broker. The Web Server will receive this data and store it in the SQLite database. Users can interact with the system through the user interface, accessing sensor data through natural language queries powered by OpenAI's GPT-3.5.
 
-Contributions
+## Contributions
 Contributions to the STS Challenge - IoT Project are welcome. If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request. Let's work together to make this project even better!
 
-License
+## License
 This project is licensed under the MIT License.
 
 ## Acknowledgments
