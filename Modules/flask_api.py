@@ -68,7 +68,12 @@ def addSensor():
     cur = db.cursor()
     # Get most recent sensor value
     max_id = cur.execute("SELECT MAX(id) FROM sensors")
-    new_id = max_id.fetchone()[0] + 1
+    new_id = max_id.fetchone()[0]
+    if new_id is None:
+        new_id = 0
+    else:
+        new_id = new_id + 1
+
     # Insert data into database
     cur.execute(
         "INSERT INTO sensors (id, name, type, office, building, room, units)"
