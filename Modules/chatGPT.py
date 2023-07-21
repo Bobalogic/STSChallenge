@@ -1,7 +1,8 @@
 import openai
 import sqlite3
+import os
 
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 table1 = "sensors"
 table2 = "sensor_values"
@@ -47,19 +48,17 @@ def getQuery(text):
         cursor.close()
         conn.close()
 
-
     if result != noResults and len(result) <= 10:
-
         print(result)
         secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
-                    Present the information better, in a more straightforward and readable way. Give me only the phrase""".format(text, result)
+                    Present the information better, in a more straightforward and readable way. Give me only the phrase""".format(
+            text, result
+        )
         # Get the sql query of the prompt
         request = openai.ChatCompletion.create(
-            model = "gpt-3.5-turbo-0301",
-            messages = [{"role": "user", "content": secondPrompt}]
+            model="gpt-3.5-turbo-0301",
+            messages=[{"role": "user", "content": secondPrompt}],
         )
         result = request["choices"][0]["message"]["content"]
 
     return result
-
-
