@@ -11,9 +11,9 @@ from plotly import graph_objs as go
 st.set_page_config(page_title="STS APP ")
 col1, col2 = st.columns([1, 2])
 
-logo_1 = Image.open("logo_1.png")
-logo_2 = Image.open("logo_2.png")
-logo_3 = Image.open("logo_3.png")
+logo_1 = Image.open("./Modules/frontend/logo_1.png")
+logo_2 = Image.open("./Modules/frontend/logo_2.png")
+logo_3 = Image.open("./Modules/frontend/logo_3.png")
 
 image = [logo_1, logo_2, logo_3]
 

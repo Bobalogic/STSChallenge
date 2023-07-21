@@ -5,22 +5,27 @@ import time
 import schedule
 
 
+# maximum capacity of each building
 b1_max = 316
 b2_max = 207
 
+# initial value of people in each building
 curr_b1 = 0
 curr_b2 = 0
 
+# initial value of water in each building
 curr_w1 = 200
 curr_w2 = 200
 
+# initial value of electricity in each building
 curr_e1 = 200000
 curr_e2 = 200000
 
+# initial value of gas in each building
 curr_g1 = 4000
 curr_g2 = 4000
 
-
+# the callback for when the client receives a CONNACK response from the server
 def on_connect(client, userdata, flags, rc):
     print("Connection returned result: " + str(rc))
 
@@ -30,18 +35,21 @@ client.on_connect = on_connect
 client.connect("test.mosquitto.org", port=1883)
 
 
+# increments number of people in building 1 without exceeding the maximum capacity
 def incr1():
     global curr_b1
     if curr_b1 < b1_max:
         curr_b1 += 1
 
 
+# increments number of people in building 2 without exceeding the maximum capacity
 def incr2():
     global curr_b2
     if curr_b2 < b2_max:
         curr_b2 += 1
 
 
+#decrements number of people in both buildings
 def decr():
     global curr_b2
     global curr_b1
@@ -51,6 +59,7 @@ def decr():
         curr_b2 -= 1
 
 
+# publishes the temperature of each room
 def pub_temp():
     t1 = uniform(18.0, 22.0)
     t2 = uniform(18.0, 22.0)
@@ -79,6 +88,7 @@ def pub_temp():
     )
 
 
+# publishes number of people in each building
 def pub_bld_oc():
     client.publish(
         "SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_NOP/Number of people",
@@ -89,7 +99,7 @@ def pub_bld_oc():
         curr_b2,
     )
 
-
+# publishes presence of each room
 def pub_room_oc():
     client.publish(
         "SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_PRS/Presence", randrange(2)
@@ -110,7 +120,7 @@ def pub_room_oc():
         "SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B2_R3_PRS/Presence", randrange(2)
     )
 
-
+# publishes value of noise of each room
 def pub_room_nse():
     n1 = uniform(10.0, 60.0)
     n2 = uniform(10.0, 60.0)
@@ -139,6 +149,7 @@ def pub_room_nse():
     )
 
 
+# publishes value of illuminance of each room
 def pub_lum():
     l1 = uniform(50.0, 1000.0)
     if l1 < 50:
@@ -179,6 +190,7 @@ def pub_lum():
     )
 
 
+# publishes value of CO2 of each room
 def pub_co2():
     c1 = uniform(350.0, 1000.0)
     c2 = uniform(300.0, 1000.0)
@@ -207,6 +219,7 @@ def pub_co2():
     )
 
 
+# publishes value of water of each building
 def pub_water():
     global curr_w1
     global curr_w2
@@ -223,6 +236,7 @@ def pub_water():
     )
 
 
+# publishes value of electricity of each building
 def pub_electricity():
     global curr_e1
     global curr_e2
@@ -239,6 +253,8 @@ def pub_electricity():
     )
 
 
+
+# publishes value of gas of each building
 def pub_gas():
     global curr_g1
     global curr_g2
@@ -255,6 +271,7 @@ def pub_gas():
     )
 
 
+# sets interval of time for each function to run
 schedule.every(40).seconds.do(pub_temp)
 schedule.every(5).seconds.do(pub_bld_oc)
 schedule.every(8).seconds.do(incr1)
