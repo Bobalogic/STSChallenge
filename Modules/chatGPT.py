@@ -1,7 +1,7 @@
 import openai
 import sqlite3
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 table1 = "sensors"
 table2 = "sensor_values"
