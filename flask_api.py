@@ -4,6 +4,7 @@
 from flask import Flask, request, jsonify
 import sqlite3
 import json
+from chatGPT import getQuery
 
 app = Flask(__name__)
 
@@ -82,8 +83,9 @@ def addSensor():
 
 # Request to get sensor values from natural language query
 @app.route("/nlquery/<nlquery>", methods=["POST"])
-def getQuery(nlquery):
-    return "Query the system with prompt -> " + nlquery
+def getQueryNL(nlquery):
+    final = getQuery(nlquery)
+    return final
 
 
 # Request to get all rooms in a building
