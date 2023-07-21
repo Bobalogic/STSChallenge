@@ -46,12 +46,23 @@ def getQuery(text):
         cursor.close()
         conn.close()
 
+    if result != noResults:
+        secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
+                    Present the information better, in a more straightforward and readable way. Only the phrase""".format(text, result)
+        # Get the sql query of the prompt
+        request = openai.ChatCompletion.create(
+            model = "gpt-3.5-turbo-0301",
+            messages = [{"role": "user", "content": secondPrompt}]
+        )
+        result = request["choices"][0]["message"]["content"]
+
     return result
+
 
 '''
 # TEST
-results = getQuery("select all rooms in aviero")
+'''
+results = getQuery("select all offices")
 
 for i in results:
     print(i)
-'''
