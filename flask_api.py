@@ -88,39 +88,39 @@ def getQueryNL(nlquery):
     return final
 
 
-# Request to get all rooms in a building
-@app.route("/rooms/<building>/<location>", methods=["GET"])
-def getRoomsInBuilding(building, location):
-    # Connect to database
-    db = sqlite3.connect("sensors.db")
-    cur = db.cursor()
-    # Query database
-    res = cur.execute(
-        "SELECT DISTINCT room FROM sensors "
-        "WHERE (building= "
-        + str(building)
-        + "AND office= "
-        + str(location)
-        + ") ORDER BY room ASC"
-    )
-    result = res.fetchall()
-    print(result)
-    # Close database connection
-    cur.close()
-    db.close()
-    # Parse result into JSON
-    entry = "["
-    # for read in result:
-    #     entry = entry + json.dumps(subentry) + ","
-    # entry = entry[:-1] + "]"
-    # Return JSON
-    return entry
+# # Request to get all rooms in a building
+# @app.route("/rooms/<building>/<location>", methods=["GET"])
+# def getRoomsInBuilding(building, location):
+#     # Connect to database
+#     db = sqlite3.connect("sensors.db")
+#     cur = db.cursor()
+#     # Query database
+#     res = cur.execute(
+#         "SELECT DISTINCT room FROM sensors "
+#         "WHERE (building= "
+#         + str(building)
+#         + "AND office= "
+#         + str(location)
+#         + ") ORDER BY room ASC"
+#     )
+#     result = res.fetchall()
+#     print(result)
+#     # Close database connection
+#     cur.close()
+#     db.close()
+#     # Parse result into JSON
+#     entry = "["
+#     # for read in result:
+#     #     entry = entry + json.dumps(subentry) + ","
+#     # entry = entry[:-1] + "]"
+#     # Return JSON
+#     return entry
 
 
-# Request to get all buildings in a location
-@app.route("/buildings/<location>", methods=["GET"])
-def getBuildingsInLocation(location):
-    return "Location " + location + " has buildings A, B, C"
+# # Request to get all buildings in a location
+# @app.route("/buildings/<location>", methods=["GET"])
+# def getBuildingsInLocation(location):
+#     return "Location " + location + " has buildings A, B, C"
 
 
 if __name__ == "__main__":
