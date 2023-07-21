@@ -4,17 +4,23 @@
 from flask import Flask, request, jsonify
 import sqlite3
 import json
+import paho.mqtt.client as mqtt
+from enum import Enum
+from datetime import datetime
+
 from chatGPT import getQuery
 
 app = Flask(__name__)
-database = "IoTroopers.db"
+databaseName = "IoTroopers.db"
+dbhub_io_url = "https://dbhub.io/Bobalogic/IoTroopers.db"
+existingSensors = {}
 
 
 # Request to get specific sensor data
 @app.route("/sensors/<sensorId>", methods=["GET"])
 def getSensor(sensorId):
     # Connect to database
-    db = sqlite3.connect(database)
+    db = sqlite3.connect(databaseName)
     cur = db.cursor()
     # Query database
     res = cur.execute(
@@ -64,7 +70,7 @@ def addSensor():
     # Get data from request
     data = request.get_json()
     # Connect to database
-    db = sqlite3.connect(database)
+    db = sqlite3.connect(databaseName)
     cur = db.cursor()
     # Get most recent sensor value
     max_id = cur.execute("SELECT MAX(id) FROM sensors")
@@ -87,41 +93,6 @@ def addSensor():
 def getQueryNL(nlquery):
     final = getQuery(nlquery)
     return final
-
-
-# # Request to get all rooms in a building
-# @app.route("/rooms/<building>/<location>", methods=["GET"])
-# def getRoomsInBuilding(building, location):
-#     # Connect to database
-#     db = sqlite3.connect(database)
-#     cur = db.cursor()
-#     # Query database
-#     res = cur.execute(
-#         "SELECT DISTINCT room FROM sensors "
-#         "WHERE (building= "
-#         + str(building)
-#         + "AND office= "
-#         + str(location)
-#         + ") ORDER BY room ASC"
-#     )
-#     result = res.fetchall()
-#     print(result)
-#     # Close database connection
-#     cur.close()
-#     db.close()
-#     # Parse result into JSON
-#     entry = "["
-#     # for read in result:
-#     #     entry = entry + json.dumps(subentry) + ","
-#     # entry = entry[:-1] + "]"
-#     # Return JSON
-#     return entry
-
-
-# # Request to get all buildings in a location
-# @app.route("/buildings/<location>", methods=["GET"])
-# def getBuildingsInLocation(location):
-#     return "Location " + location + " has buildings A, B, C"
 
 
 if __name__ == "__main__":

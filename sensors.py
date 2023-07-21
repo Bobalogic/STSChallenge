@@ -1,7 +1,9 @@
 import paho.mqtt.client as mqtt
+import ssl
 from random import randrange, uniform
 import time
 import schedule
+
 
 b1_max = 316
 b2_max = 207
