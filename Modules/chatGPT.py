@@ -47,7 +47,30 @@ def getQuery(text):
         cursor.close()
         conn.close()
 
+<<<<<<< HEAD
+    if result != noResults:
+        print(result)
+        secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
+                    Present the information better, in a more straightforward and readable way. Only the phrase""".format(text, result)
+        # Get the sql query of the prompt
+        request = openai.ChatCompletion.create(
+            model = "gpt-3.5-turbo-0301",
+            messages = [{"role": "user", "content": secondPrompt}]
+        )
+        result = request["choices"][0]["message"]["content"]
+=======
     print(result)
+>>>>>>> 061e044027b53b44d6fc74c8d53fd40326b86f5e
+
+    if result != noResults:
+        secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
+                    Present the information better, in a more straightforward and readable way. Only the phrase""".format(text, result)
+        # Get the sql query of the prompt
+        request = openai.ChatCompletion.create(
+            model = "gpt-3.5-turbo-0301",
+            messages = [{"role": "user", "content": secondPrompt}]
+        )
+        result = request["choices"][0]["message"]["content"]
 
     if result != noResults:
         secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
@@ -62,10 +85,18 @@ def getQuery(text):
     return result
 
 
+<<<<<<< HEAD
 '''
+=======
+"""
+>>>>>>> 061e044027b53b44d6fc74c8d53fd40326b86f5e
 # TEST
 '''
 results = getQuery("select all offices")
 
 for i in results:
+<<<<<<< HEAD
     print(i)
+=======
+    print(i)
+"""
