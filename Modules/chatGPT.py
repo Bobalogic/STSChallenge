@@ -1,7 +1,7 @@
 import openai
 import sqlite3
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 table1 = "sensors"
 table2 = "sensor_values"
@@ -29,7 +29,7 @@ def getQuery(text):
         conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
-        # print(sql_query)
+        print(sql_query)
         # Verify if it's a SELECT query
         if sql_query[:6].lower() == "select":
             cursor.execute(sql_query)
@@ -58,26 +58,6 @@ def getQuery(text):
         )
         result = request["choices"][0]["message"]["content"]
 
-    if result != noResults:
-        secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
-                    Present the information better, in a more straightforward and readable way. Only the phrase""".format(text, result)
-        # Get the sql query of the prompt
-        request = openai.ChatCompletion.create(
-            model = "gpt-3.5-turbo-0301",
-            messages = [{"role": "user", "content": secondPrompt}]
-        )
-        result = request["choices"][0]["message"]["content"]
-
-    if result != noResults:
-        secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
-                    Present the information better, in a more straightforward and readable way. Only the phrase""".format(text, result)
-        # Get the sql query of the prompt
-        request = openai.ChatCompletion.create(
-            model = "gpt-3.5-turbo-0301",
-            messages = [{"role": "user", "content": secondPrompt}]
-        )
-        result = request["choices"][0]["message"]["content"]
-
     return result
 
 
@@ -86,6 +66,4 @@ def getQuery(text):
 '''
 results = getQuery("select all offices")
 
-for i in results:
-    print(i)
-    print(i)
+print(results)
