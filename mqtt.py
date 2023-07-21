@@ -16,9 +16,10 @@ SensorUnits = {
     'Number of people': ['Integer', 0, 800]
 }
 
-databaseName = 'IoTroopers.db'
+databaseName = "IoTroopers.db"
 dbhub_io_url = 'https://dbhub.io/Bobalogic/IoTroopers.db'
 existingSensors = {}
+
 
 def initialize_db():
     try:
@@ -26,8 +27,10 @@ def initialize_db():
         conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
 
-        cursor.execute(""" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='sensors' """)
-        #if the count is 1, then table exists
+        cursor.execute(
+            """ SELECT count(name) FROM sqlite_master WHERE type='table' AND name='sensors' """
+        )
+        # if the count is 1, then table exists
         if cursor.fetchone()[0] == 1:
             print("DB already exists, skipping initialization.")
             # Get all the sensors
@@ -38,7 +41,8 @@ def initialize_db():
                 existingSensors.update({sensor[0]: sensor[1]})
         else:
             # Create tables
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS "sensors" (
                     "id" INTEGER PRIMARY KEY,
                     "name" TEXT COLLATE NOCASE,
@@ -48,17 +52,21 @@ def initialize_db():
                     "room" TEXT COLLATE NOCASE,
                     "units" TEXT COLLATE NOCASE
                 )
-            """)
+            """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
               CREATE TABLE IF NOT EXISTS "sensor_values" (
                 "sensor" INTEGER,
                 "timestamp" TEXT,
                 "value" REAL
               )
-            """)
+            """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TRIGGER check_same_sensor
                 BEFORE UPDATE ON sensor_values
                 FOR EACH ROW
@@ -66,8 +74,8 @@ def initialize_db():
                 BEGIN
                     SELECT RAISE(ABORT, 'Sensor ID cannot be changed');
                 END;
-            """)
-
+            """
+            )
 
             # Commit the transaction and close the connection
             conn.commit()
@@ -124,6 +132,7 @@ def add_sensor_to_db(topics):
     return new_sensor_id
 '''
 
+
 def get_current_timestamp():
     current_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     return current_timestamp
@@ -133,12 +142,15 @@ def add_sensor_value_to_db(id, value):
         conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO sensor_values (sensor, timestamp, value) VALUES (?, ?, ?)
-        """, (id, get_current_timestamp(), value))
+        """,
+            (id, get_current_timestamp(), value),
+        )
 
         conn.commit()
-    
+
     except sqlite3.Error as e:
         # Handle any potential errors that might occur during the database operation
         print("Error: ", e)
@@ -164,26 +176,6 @@ def on_message(client, userdata, msg):
     
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
-        try:
-            # Get the match for the sensor unit and it's range of values
-            match = SensorUnits.get(topics[-1])
-            topics.append(match[0])
-            value = int(msg.payload.decode())
-            name = topics[3]
-            # Check if the value is in a valid range for it's type
-            if value < match[1] or value > match[2]:
-                print("Value (", value, ") out of range (", match[1], "-", match[2], ")")
-                return
-        # If the unit is not recognized
-        except TypeError as te:
-            print("Error in sensor:", ', '.join(map(str, topics[:-2])))
-            print("No known unit for", topics[-1])
-            return
-        # If it's not an integer value
-        except ValueError as ve:
-            print("Error in sensor:", ', '.join(map(str, topics[:-2])))
-            print("Not a number for value", value)
-            return
         # Check if the sensor is in memory
         global existingSensors
         id = existingSensors.get(name, -1)
@@ -199,22 +191,24 @@ def on_message(client, userdata, msg):
             if queryResult:
                 id = queryResult[0]
                 existingSensors.update({name: id})
-                
+
             cursor.close()
             conn.close()
-        
+
         # If the sensor is in the database, add the value
         if id != -1:
             add_sensor_value_to_db(id, value)
+
 
 def start():
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.connect('test.mosquitto.org', port=1883)
+    client.connect("test.mosquitto.org", port=1883)
     initialize_db()
 
     client.loop_forever()
+
 
 start()
