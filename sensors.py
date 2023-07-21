@@ -48,12 +48,12 @@ def pub_temp():
     t5 = uniform(18.0, 22.0)
     t6 = uniform(18.0, 22.0)
 
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_TEMP/Temperature", round(t1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_TEMP/Temperature", round(t2, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_TEMP/Temperature", round(t3, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_TEMP/Temperature", round(t4, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_TEMP/Temperature", round(t5, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_TEMP/Temperature", round(t6, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_TEMP/Temperature", int(t1))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_TEMP/Temperature", int(t2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_TEMP/Temperature", int(t3))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_TEMP/Temperature", int(t4))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_TEMP/Temperature", int(t5))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_TEMP/Temperature", int(t6))
 
 def pub_bld_oc():
     client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_NOP/Number of people", curr_b1)
@@ -75,12 +75,12 @@ def pub_room_nse():
     n5 = uniform(10.0, 60.0)
     n6 = uniform(10.0, 60.0)
 
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_NSE/Noise", round(n1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_NSE/Noise", round(n2, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_NSE/Noise", round(n3, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_NSE/Noise", round(n4, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_NSE/Noise", round(n5, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_NSE/Noise", round(n6, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_NSE/Noise", int(n1))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_NSE/Noise", int(n2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_NSE/Noise", int(n3))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_NSE/Noise", int(n4))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_NSE/Noise", int(n5))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_NSE/Noise", int(n6))
 
 def pub_lum():
     l1 = uniform(50.0, 1000.0)
@@ -96,12 +96,12 @@ def pub_lum():
     l6 = uniform(50.0, 1000.0)
     if (l6 < 50): l6 = 0
 
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_ILUM/Illuminance", round(l1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_ILUM/Illuminance", round(l2, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_ILUM/Illuminance", round(l3, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_ILUM/Illuminance", round(l4, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_ILUM/Illuminance", round(l5, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_ILUM/Illuminance", round(l6, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_ILUM/Illuminance", int(l1))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_ILUM/Illuminance", int(l2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_ILUM/Illuminance", int(l3))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_ILUM/Illuminance", int(l4))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_ILUM/Illuminance", int(l5))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_ILUM/Illuminance", int(l6))
 
 def pub_co2():
     c1 = uniform(350.0, 1000.0)
@@ -111,12 +111,12 @@ def pub_co2():
     c5 = uniform(300.0, 1000.0)
     c6 = uniform(300.0, 1000.0)
 
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_CO2/CO2 level", round(c1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_CO2/CO2 level", round(c2, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_CO2/CO2 level", round(c3, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_CO2/CO2 level", round(c4, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_CO2/CO2 level", round(c5, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_CO2/CO2 level", round(c6, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room1/IOTR_B1_R1_CO2/CO2 level", int(c1))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room2/IOTR_B1_R2_CO2/CO2 level", int(c2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Room3/IOTR_B1_R1_CO2/CO2 level", int(c3))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room1/IOTR_B1_R2_CO2/CO2 level", int(c4))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room2/IOTR_B1_R1_CO2/CO2 level", int(c5))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Room3/IOTR_B1_R2_CO2/CO2 level", int(c6))
 
 def pub_water():
     global curr_w1
@@ -124,8 +124,8 @@ def pub_water():
     curr_w1 += 2
     curr_w2 += 1
     
-    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_WTR/Water meter", round(curr_w1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_WTR/Water meter", round(curr_w2, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_WTR/Water meter", int(curr_w1))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_WTR/Water meter", int(curr_w2))
 
 def pub_electricity():
     global curr_e1
@@ -133,8 +133,8 @@ def pub_electricity():
     curr_e1 += 2
     curr_e2 += 1
     
-    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_ELC/Electricity meter", round(curr_e1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_ELC/Electricity meter", round(curr_e2, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_ELC/Electricity meter", int(curr_e1))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_ELC/Electricity meter", int(curr_e2))
 
 def pub_gas():
     global curr_g1
@@ -142,8 +142,8 @@ def pub_gas():
     curr_g1 += 2
     curr_g2 += 1
     
-    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_GAS/Gas meter", round(curr_g1, 2))
-    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_GAS/Gas meter", round(curr_g2, 2))
+    client.publish("SummerCampSTS/IoTroopers/Building1/Building/IOTR_B1_GAS/Gas meter", int(curr_g1))
+    client.publish("SummerCampSTS/IoTroopers/Building2/Building/IOTR_B2_GAS/Gas meter", int(curr_g2))
 
 schedule.every(40).seconds.do(pub_temp)
 schedule.every(5).seconds.do(pub_bld_oc)
