@@ -22,29 +22,36 @@ def getSensor(sensorId):
         "WHERE sensors.id=" + str(sensorId) + " ORDER BY timestamp DESC LIMIT 10"
     )
     result = res.fetchall()
-    first = result[0]
-    later = [first[2], first[3], first[4], first[5], first[6]]
-    # Close database connection
-    cur.close()
-    db.close()
-    # Parse data parameter into JSON
-    entry = "["
-    for read in result:
-        subentry = {}
-        subentry["value"] = read[0]
-        subentry["timestamp"] = read[1]
-        entry = entry + json.dumps(subentry) + ","
-    entry = entry[:-1] + "]"
-    # Final JSON object
-    final = {}
-    final["sensor"] = sensorId
-    final["location"] = later[0]
-    final["building"] = later[1]
-    final["room"] = later[2]
-    final["type"] = later[3]
-    final["units"] = later[4]
-    final["data"] = json.loads(entry)
-    final = json.dumps(final)
+    if len(result) == 0:
+        # Close database connection
+        cur.close()
+        db.close()
+        # Return error message
+        final = {}
+    else:
+        first = result[0]
+        later = [first[2], first[3], first[4], first[5], first[6]]
+        # Close database connection
+        cur.close()
+        db.close()
+        # Parse data parameter into JSON
+        entry = "["
+        for read in result:
+            subentry = {}
+            subentry["value"] = read[0]
+            subentry["timestamp"] = read[1]
+            entry = entry + json.dumps(subentry) + ","
+        entry = entry[:-1] + "]"
+        # Final JSON object
+        final = {}
+        final["sensor"] = sensorId
+        final["location"] = later[0]
+        final["building"] = later[1]
+        final["room"] = later[2]
+        final["type"] = later[3]
+        final["units"] = later[4]
+        final["data"] = json.loads(entry)
+        final = json.dumps(final)
     # Return JSON
     return final
 
