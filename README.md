@@ -31,6 +31,6 @@ Contributions to the STS Challenge - IoT Project are welcome. If you find any is
 License
 This project is licensed under the MIT License.
 
-Acknowledgments
+## Acknowledgments
 We would like to express our gratitude to OpenAI for providing GPT-3.5, enabling us to implement the natural language query feature in our user interface. Their cutting-edge technology has greatly enhanced the functionality and user experience of this project.
 IoTroopers rules!
