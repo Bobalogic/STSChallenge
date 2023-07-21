@@ -1,28 +1,24 @@
-STS Challenge - IoT Project
-This repository contains the STS Challenge - IoT Project, which consists of an IoT sensor data generator serving a MQTT broker connected to a Web Server in a Publish-Subscribe architecture. The Web Server provides a REST API to access the sensor data, which is stored in a SQLite database. Additionally, the project includes a user interface featuring a natural language query feature powered by OpenAI's GPT-3.5.
+# STS Challenge - IoT Project
 
-Description
-The project aims to demonstrate a simple yet comprehensive IoT system that involves the following components:
+## Description
 
-IoT Sensor Data Generator: The IoT sensor data generator simulates various sensors, such as temperature, CO2 level, presence, water meter, gas meter, noise, illuminance, electricity meter, and number of people. The generated data is published to the MQTT broker.
+This repository contains the STS Challenge - IoT Project, which demonstrates an IoT system consisting of an IoT sensor data generator, a MQTT broker, a Web Server, and a user interface with a natural language query feature powered by OpenAI's GPT-3.5.
 
-MQTT Broker: The MQTT broker handles the communication between the IoT sensor data generator and the Web Server. It operates on the Publish-Subscribe architecture, allowing sensors to publish data and clients to subscribe to relevant topics.
+## Components
 
-Web Server: The Web Server is responsible for receiving and storing the sensor data into a SQLite database. It also provides a REST API, allowing users to access the sensor data efficiently.
+- **IoT Sensor Data Generator**: Simulates various sensors and publishes generated data to the MQTT broker.
+- **MQTT Broker**: Handles communication between the IoT sensor data generator and the Web Server using the Publish-Subscribe architecture.
+- **Web Server**: Receives sensor data and provides a REST API for data access. Stores data in a SQLite database.
+- **SQLite Database**: Stores sensor data received by the Web Server.
+- **User Interface with Natural Language Query Feature**: Incorporates OpenAI's GPT-3.5 for user interaction and natural language queries to retrieve sensor data.
 
-SQLite Database: The SQLite database stores the sensor data received by the Web Server. It provides a lightweight, self-contained database system for easy data management.
+## Setup and Configuration
 
-User Interface with Natural Language Query Feature: The user interface allows users to interact with the system. It incorporates OpenAI's GPT-3.5 to enable natural language queries for sensor data retrieval.
+1. Clone the repository.
 
-Setup and Configuration
-To run the STS Challenge - IoT Project locally, follow these steps:
+2. Install dependencies:
 
-Clone this repository to your local machine.
-
-Install the required dependencies by running the following command:
-
-bash
-Copy code
+```bash
 pip install -r requirements.txt
 Generate TLS/SSL certificates and private keys for secure communication between the MQTT broker and the IoT sensor data generator. Place the ca.crt, broker.crt, and broker.key files in the TLS-SSL directory.
 
