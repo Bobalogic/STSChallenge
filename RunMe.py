@@ -18,6 +18,8 @@ def frontend():
 
 
 if __name__ == "__main__":
+    subprocess.call(["pip", "install", "-r", ".\\requirements.txt"], shell=True)
+
     generate_data_thread = threading.Thread(target=generate_data)
     backend_thread = threading.Thread(target=backend)
     api_thread = threading.Thread(target=api)

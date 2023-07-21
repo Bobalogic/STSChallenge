@@ -80,8 +80,6 @@ if selected == "Sensor Data":
 
         json_data = json.loads(response.text)
 
-        print(json_data)
-
         if len(json_data) == 0:  # has no values
             st.warning("Sensor {} has no values".format(sensor_id))
 
@@ -91,21 +89,17 @@ if selected == "Sensor Data":
             st.markdown("**Building :** {}".format(json_data["building"]))
             st.markdown("**Room :** {}".format(json_data["room"]))
 
+            st.subheader("Graph:")
             time = []
             value = []
-            for i in range(10):
-                st.write(
-                    "Value {} Timestamp: {}".format(
-                        json_data["data"][i]["value"],
-                        json_data["data"][i]["timestamp"][:-7],
-                    )
-                )
+            for i in range(len(json_data["data"])):
                 datetime_object = datetime.strptime(
-                    json_data["data"][i]["timestamp"][:-7], "%Y-%m-%d %H:%M:%S"
+                    json_data["data"][i]["timestamp"], "%Y-%m-%d %H:%M:%S"
                 )
                 time.append(datetime_object)
                 value.append(json_data["data"][i]["value"])
 
+            # plot graph
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=time, y=value, name="aaaa"))
             fig.layout.update(
@@ -114,3 +108,16 @@ if selected == "Sensor Data":
                 yaxis_title=json_data["units"],
             )
             st.plotly_chart(fig)
+
+            # make table
+            df = pd.DataFrame(json_data["data"])
+            st.subheader("Table:")
+            st.table(data=df)
+
+
+if selected == "GPT":
+    banner(2)
+    prompt = st.text_input("enter your question")
+    if st.button("Send"):
+        response = requests.post("http://localhost:5000/nlquery/{}".format(prompt))
+        st.info(response.text)

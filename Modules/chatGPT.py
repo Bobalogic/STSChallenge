@@ -1,7 +1,7 @@
 import openai
 import sqlite3
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 table1 = "sensors"
 table2 = "sensor_values"
@@ -47,7 +47,9 @@ def getQuery(text):
         cursor.close()
         conn.close()
 
+
     if result != noResults and len(result) <= 10:
+
         print(result)
         secondPrompt = """I queried a database with this prompt: '{}' and the answear was: '{}'. 
                     Present the information better, in a more straightforward and readable way. Give me only the phrase""".format(text, result)
@@ -61,8 +63,3 @@ def getQuery(text):
     return result
 
 
-'''
-# TEST
-results = getQuery("select the temperatures from all rooms")
-print(results)
-'''
