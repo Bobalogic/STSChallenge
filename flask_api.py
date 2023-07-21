@@ -54,32 +54,23 @@ def getSensor(sensorId):
 def addSensor():
     # Get data from request
     data = request.get_json()
-    print("Adding sensor " + str(data["id"]))
     # Connect to database
     db = sqlite3.connect("sensors.db")
     cur = db.cursor()
-    # Check if sensor exists
-    test = cur.execute("SELECT * FROM sensors WHERE id=" + str(data["id"]))
-    if test.fetchone() is None:
-        # Get most recent sensor value
-        id = cur.execute("SELECT MAX(id) FROM sensor_values")
-        print(id.fetchone()[0])
-        # Insert data into database
-        cur.execute(
-            "INSERT INTO sensors (id, name, type, office, building, room, units)"
-            "VALUES (:id, :name, :type, :office, :building, :room, :units)",
-            data,
-        )
-        db.commit()
-        # Close database connection
-        cur.close()
-        db.close()
-        return "Sensor " + str(data["id"]) + " added successfully"
-    else:
-        # Close database connection
-        cur.close()
-        db.close()
-        return "Sensor " + str(data["id"]) + " already exists"
+    # Get most recent sensor value
+    max_id = cur.execute("SELECT MAX(id) FROM sensors")
+    new_id = max_id.fetchone()[0] + 1
+    # Insert data into database
+    cur.execute(
+        "INSERT INTO sensors (id, name, type, office, building, room, units)"
+        "VALUES (" + str(new_id) + ", :name, :type, :office, :building, :room, :units)",
+        data,
+    )
+    db.commit()
+    # Close database connection
+    cur.close()
+    db.close()
+    return "Sensor " + str(new_id) + " added successfully"
 
 
 # Request to get sensor values from natural language query
