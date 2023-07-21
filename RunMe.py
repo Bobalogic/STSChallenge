@@ -24,7 +24,7 @@ def api():
 def frontend():
     # subprocess.call(["cd", "Modules\\frontend"], shell=True)
     # subprocess.call(["dir"], shell=True)
-    subprocess.call("streamlit", "run", "Modules\\frontend\\app.py", shell=True)
+    subprocess.call(["streamlit", "run", "Modules\\frontend\\app.py"], shell=True)
 
 
 if __name__ == "__main__":
