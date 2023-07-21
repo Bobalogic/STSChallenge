@@ -7,7 +7,7 @@ table1 = "sensors"
 table2 = "sensor_values"
 columns1 = ['id', 'name', 'type', 'office', 'building', 'room', 'units']
 columns2 = ['sensor', 'timestamp', 'value']
-
+noResults = ["No results found"]
 
 def getQuery(text):
 
@@ -16,7 +16,7 @@ def getQuery(text):
                 and I will generate the corresponding SQL query query for you, \
                 Which will be compatible with SQLite. \
                 The table names are {} and {} and the corresponding \ columns are {} and {}. \nInput: {}\nSQL Query:""".format(table1, table2, columns1, columns2, text)
-
+    # Get the sql query of the prompt
     request = openai.ChatCompletion.create(
         model = "gpt-3.5-turbo-0301",
         messages = [{"role": "user", "content": prompt}]
@@ -24,29 +24,34 @@ def getQuery(text):
     sql_query = request["choices"][0]["message"]["content"]
 
     try:
-        # Verify if the sensor already exists
+        # Connect to database
         conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
         cursor = conn.cursor()
 
-        print(sql_query)
-        # Verifica se a query contem apenas select
+        #print(sql_query)
+        # Verify if it's a SELECT query
         if sql_query[:6].lower() == 'select':
-            #cursor.execute(sql_query)
-            #result = cursor.fetchall()
-            result = "RESULTS"
+            cursor.execute(sql_query)
+            result = cursor.fetchall()
+            # Check if there are any results
+            if not result:
+                result = noResults
+        # If it's not a SELECT query, no results
         else:
-            result = "No results found"
+            result = noResults
 
     except sqlite3.Error as e:
-        result = "No results found"
-
+        result = noResults
     finally:
         cursor.close()
         conn.close()
 
     return result
 
-results = getQuery("get the sensor in Lisboa, Building1, Room2 for Temperature")
+'''
+# TEST
+results = getQuery("select all rooms in aviero")
 
 for i in results:
     print(i)
+'''
