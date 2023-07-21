@@ -132,7 +132,6 @@ def add_sensor_to_db(topics):
     return new_sensor_id
 '''
 
-
 def get_current_timestamp():
     current_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     return current_timestamp
@@ -176,6 +175,26 @@ def on_message(client, userdata, msg):
     
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
+        try:
+            # Get the match for the sensor unit and it's range of values
+            match = SensorUnits.get(topics[-1])
+            topics.append(match[0])
+            value = int(msg.payload.decode())
+            name = topics[3]
+            # Check if the value is in a valid range for it's type
+            if value < match[1] or value > match[2]:
+                print("Value (", value, ") out of range (", match[1], "-", match[2], ")")
+                return
+        # If the unit is not recognized
+        except TypeError as te:
+            print("Error in sensor:", ', '.join(map(str, topics[:-2])))
+            print("No known unit for", topics[-1])
+            return
+        # If it's not an integer value
+        except ValueError as ve:
+            print("Error in sensor:", ', '.join(map(str, topics[:-2])))
+            print("Not a number for value", value)
+            return
         # Check if the sensor is in memory
         global existingSensors
         id = existingSensors.get(name, -1)
