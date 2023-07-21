@@ -1,1 +1,3 @@
 # STSChallenge
+
+IoTroopers rules!
