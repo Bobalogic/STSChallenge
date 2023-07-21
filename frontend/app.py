@@ -4,6 +4,9 @@ from PIL import Image
 import requests
 import json
 from datetime import datetime
+import numpy as np
+import pandas as pd
+from plotly import graph_objs as go
 
 st.set_page_config(page_title="STS APP ")
 col1, col2 = st.columns([1,2])
@@ -21,7 +24,7 @@ selected = option_menu(menu_title=None,
 if selected == 'Add Sensor':
 
 	with st.form(key='form1', clear_on_submit=False):
-		id_ = st.number_input("id: ", step=1, min_value=1)
+		#id_ = st.number_input("id: ", step=1, min_value=1) increments alone
 		name_ = st.text_input("name")
 		type_ = st.text_input("type")
 		office_ = st.text_input("office")
@@ -73,11 +76,33 @@ if selected == 'Sensor Data':
 		response = requests.get("http://localhost:5000/sensors/{}".format(sensor_id))
 
 		json_data = json.loads(response.text)
-		#datetime_object = datetime.strptime(json_data[0]['timestamp'][:-7], '%y-%m-%d %H:%M:%S')
+		
+		st.subheader("Info:")
+		st.markdown("**Location :** {}".format(json_data['location']))
+		st.markdown("**Building :** {}".format(json_data['building']))
+		st.markdown("**Room :** {}".format(json_data['room']))
 
+		
 
+		time = []
+		value = []
 		for i in range(10):
-			st.write("Value {} Timestamp: {}".format(json_data[i]['value'], json_data[i]['timestamp'][:-7]))
+			st.write("Value {} Timestamp: {}".format(json_data['data'][i]['value'], json_data['data'][i]['timestamp'][:-7]))
+			datetime_object = datetime.strptime(json_data['data'][i]['timestamp'][:-7], '%Y-%m-%d %H:%M:%S')
+			time.append(datetime_object)
+			value.append(json_data['data'][i]['value'])
+
+		#np_info = np.array()
+		#a = pd.DataFrame(data=[[1, 4], [2, 4], [3, 7]], columns=["caralho", "miguel"])
+		#print(a)
+		#b = np.array([[1, 2], [2, 4], [3, 8]])
+		#st.line_chart(b)
+
+		fig = go.Figure()
+		fig.add_trace(go.Scatter(x=time, y=value, name="aaaa"))
+		fig.layout.update(title_text="Exemplo")
+		st.plotly_chart(fig)
+
 
 if selected == 'GPT':
 	prompt = st.text_input("enter your question")
