@@ -28,18 +28,18 @@ def frontend():
 
 
 if __name__ == "__main__":
-    generate_data_thread = threading.Thread(target=generate_data)
-    backend_thread = threading.Thread(target=backend)
-    api_thread = threading.Thread(target=api)
-    # frontend_thread = threading.Thread(target=frontend)
+    # generate_data_thread = threading.Thread(target=generate_data)
+    # backend_thread = threading.Thread(target=backend)
+    # api_thread = threading.Thread(target=api)
+    # # frontend_thread = threading.Thread(target=frontend)
 
-    generate_data_thread.start()
-    backend_thread.start()
-    api_thread.start()
-    # frontend_thread.start()
+    # generate_data_thread.start()
+    # backend_thread.start()
+    # api_thread.start()
+    # # frontend_thread.start()
 
-    generate_data_thread.join()
-    backend_thread.join()
-    api_thread.join()
-    # frontend_thread.join()
-    # frontend()
+    # generate_data_thread.join()
+    # backend_thread.join()
+    # api_thread.join()
+    # # frontend_thread.join()
+    frontend()
