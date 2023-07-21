@@ -1,3 +1,3 @@
 # STSChallenge
 
-## IoTroopers rules!
+IoTroopers rules!
