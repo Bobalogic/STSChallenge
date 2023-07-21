@@ -1,6 +1,5 @@
 import paho.mqtt.client as mqtt
 import sqlite3
-from enum import Enum
 from datetime import datetime
 
 # type: units, min, max
