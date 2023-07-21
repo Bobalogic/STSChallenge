@@ -29,12 +29,16 @@ def getQuery(text):
         cursor = conn.cursor()
 
         print(sql_query)
-        cursor.execute(sql_query)
-        result = cursor.fetchall()
+        # Verifica se a query contem apenas select
+        if sql_query[:6].lower() == 'select':
+            #cursor.execute(sql_query)
+            #result = cursor.fetchall()
+            result = "RESULTS"
+        else:
+            result = "No results found"
 
     except sqlite3.Error as e:
-        # Handle any potential errors that might occur during the database operation
-        print("Error: ", e)
+        result = "No results found"
 
     finally:
         cursor.close()
@@ -42,7 +46,7 @@ def getQuery(text):
 
     return result
 
-results = getQuery("What is the highest temperature in all offices in the last 20 minutes and what is the office?")
+results = getQuery("get the sensor in Lisboa, Building1, Room2 for Temperature")
 
 for i in results:
     print(i)
