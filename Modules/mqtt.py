@@ -228,10 +228,6 @@ def start():
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.tls_set("TLS-SSL/ca.crt")
-    client.tls_insecure_set(True)  # Set to False if you want to validate the certificate
-
-
     client.connect("test.mosquitto.org", port=1883)
     initialize_db()
 
