@@ -17,7 +17,7 @@ SensorUnits = {
     
 }
 
-databaseName = 'IoTroopers.db'
+databaseName = "IoTroopers.db"
 dbhub_io_url = 'https://dbhub.io/Bobalogic/IoTroopers.db'
 existingSensors = {}
 
