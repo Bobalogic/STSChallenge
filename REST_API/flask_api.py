@@ -61,6 +61,9 @@ def addSensor():
     # Check if sensor exists
     test = cur.execute("SELECT * FROM sensors WHERE id=" + str(data["id"]))
     if test.fetchone() is None:
+        # Get most recent sensor value
+        id = cur.execute("SELECT MAX(id) FROM sensor_values")
+        print(id.fetchone()[0])
         # Insert data into database
         cur.execute(
             "INSERT INTO sensors (id, name, type, office, building, room, units)"

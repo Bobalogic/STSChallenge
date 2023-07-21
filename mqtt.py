@@ -17,19 +17,26 @@ SensorUnits = {
     
 }
 
+databaseName = 'IoTroopers.db'
 dbhub_io_url = 'https://dbhub.io/Bobalogic/IoTroopers.db'
 existingSensors = {}
 
 def initialize_db():
     try:
         # Connect to SQLite database - this will create a new database file if it doesn't exist
-        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+        conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
 
         cursor.execute(""" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='sensors' """)
         #if the count is 1, then table exists
         if cursor.fetchone()[0] == 1:
-           print("DB already exists, skipping initialization.")
+            print("DB already exists, skipping initialization.")
+            # Get all the sensors
+            cursor.execute(""" SELECT name, id FROM sensors""")
+            sensors = cursor.fetchall()
+            # Update the existing sensors
+            for sensor in sensors:
+                existingSensors.update({sensor[0]: sensor[1]})
         else:
             # Create tables
             cursor.execute("""
@@ -77,7 +84,7 @@ def get_current_timestamp():
 def get_sensor_id_from_db():
     try:
         # Connect to the SQLite database
-        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+        conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
 
         # Execute a query to get the highest sensor ID from the "sensors" table
@@ -99,10 +106,11 @@ def get_sensor_id_from_db():
         print("Error: ", e)
         return None
 
+'''
 def add_sensor_to_db(topics):
     new_sensor_id = get_sensor_id_from_db() + 1
     try:
-        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+        conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
         # topics: Office, Building, Room, Name, Type, Units
         cursor.execute("""
@@ -119,10 +127,11 @@ def add_sensor_to_db(topics):
         cursor.close()
         conn.close()
     return new_sensor_id
+'''
 
 def add_sensor_value_to_db(id, value):
     try:
-        conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+        conn = sqlite3.connect(databaseName, check_same_thread=False)
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -159,16 +168,18 @@ def on_message(client, userdata, msg):
 
     # Ignore keepalive messages
     if topics[2] != 'keepalive':
+        # Check if the sensor is in memory
         global existingSensors
         id = existingSensors.get(name, -1)
+        # If not, check if it was added to the database
         if id == -1:
-            # Verify if the sensor already exists
-            conn = sqlite3.connect("IoTroopers.db", check_same_thread=False)
+            # Verify if the sensor exists
+            conn = sqlite3.connect(databaseName, check_same_thread=False)
             cursor = conn.cursor()
 
             cursor.execute("""SELECT id, name FROM sensors WHERE name = ?;""", (name,))
             queryResult = cursor.fetchone()
-            # If it does get it's id
+            # If it does get it's id and update existingSensors
             if queryResult:
                 id = queryResult[0]
                 existingSensors.update({name: id})
@@ -176,25 +187,18 @@ def on_message(client, userdata, msg):
             cursor.close()
             conn.close()
         
-        # If it does get it's id
+        # If the sensor is in the database, add the value
         if id != -1:
-            print("The sensor", name, "already exists with id:", id)
-        # If not, add it
-        else:
-            id = add_sensor_to_db(topics)
-            existingSensors.update({name: id})
-            print("The sensor", name, "is new and it has an id:", id)
+            add_sensor_value_to_db(id, value)
 
-        # Add the value with the associated sensor id
-        add_sensor_value_to_db(id, value)
-        print("Added the value:", value, "to sensor", name, "with id:", id)
+def start():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+    client.connect('test.mosquitto.org', port=1883)
+    initialize_db()
 
-client.connect('test.mosquitto.org', port=1883)
-initialize_db()
+    client.loop_forever()
 
-
-client.loop_forever()
+start()
